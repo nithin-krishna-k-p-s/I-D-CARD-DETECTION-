@@ -18,6 +18,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .container {
@@ -25,8 +26,8 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             padding: 30px;
-            width: 90%;
-            max-width: 1200px;
+            width: 100%;
+            max-width: 1400px;
         }
 
         .header {
@@ -38,6 +39,10 @@
             color: #333;
             font-size: 2.5em;
             margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .header p {
@@ -51,6 +56,9 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
             justify-content: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
         }
 
         .btn {
@@ -64,144 +72,223 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 150px;
+            justify-content: center;
         }
 
         .btn-primary {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
         .btn-primary:hover {
-            background: #5a67d8;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
         .btn-success {
-            background: #48bb78;
+            background: linear-gradient(135deg, #48bb78, #38a169);
             color: white;
         }
 
         .btn-success:hover {
-            background: #38a169;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+            box-shadow: 0 10px 25px rgba(72, 187, 120, 0.4);
         }
 
         .btn-danger {
-            background: #f56565;
+            background: linear-gradient(135deg, #f56565, #e53e3e);
             color: white;
         }
 
         .btn-danger:hover {
-            background: #e53e3e;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+            box-shadow: 0 10px 25px rgba(245, 101, 101, 0.4);
         }
 
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
-        .video-container {
-            position: relative;
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .video-panel {
             background: #000;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
-            margin-bottom: 20px;
+            position: relative;
+            min-height: 500px;
         }
 
-        #videoCanvas, #webcam {
+        #videoCanvas {
             width: 100%;
             height: auto;
             display: block;
         }
 
-        .status-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+        #webcam {
+            display: none;
         }
 
-        .status-card {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 10px;
+        .placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .placeholder-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .placeholder-text {
+            font-size: 1.2em;
+            opacity: 0.5;
+        }
+
+        .stats-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             border: 2px solid #e2e8f0;
+            transition: all 0.3s;
         }
 
-        .status-card.detected {
+        .stat-card.active-green {
             border-color: #48bb78;
+            background: #f0fff4;
+            animation: pulse 2s infinite;
         }
 
-        .status-card.not-detected {
+        .stat-card.active-red {
             border-color: #f56565;
+            background: #fff5f5;
+            animation: pulse 2s infinite;
         }
 
-        .status-card h3 {
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .stat-card h3 {
             color: #4a5568;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .status-card .count {
-            font-size: 2em;
+        .stat-card .count {
+            font-size: 3em;
             font-weight: bold;
             color: #2d3748;
         }
 
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
+        .stat-card .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .alert-banner {
+            padding: 20px;
+            border-radius: 15px;
             margin-top: 20px;
             display: none;
             text-align: center;
             font-weight: 600;
+            font-size: 1.2em;
+            animation: slideIn 0.5s ease;
         }
 
-        .alert-danger {
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert-danger-banner {
             background: #fed7d7;
             color: #c53030;
-            border: 1px solid #feb2b2;
+            border: 2px solid #feb2b2;
         }
 
-        .alert-success {
+        .alert-success-banner {
             background: #c6f6d5;
             color: #276749;
-            border: 1px solid #9ae6b4;
+            border: 2px solid #9ae6b4;
+        }
+
+        .model-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .model-loaded {
+            color: #48bb78;
+            border: 2px solid #48bb78;
+        }
+
+        .model-loading {
+            color: #ed8936;
+            border: 2px solid #ed8936;
+        }
+
+        .model-error {
+            color: #f56565;
+            border: 2px solid #f56565;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .stat-card {
+                flex: 1;
+                min-width: 150px;
+            }
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 15px;
             }
             
             .header h1 {
@@ -209,17 +296,26 @@
             }
             
             .btn {
-                padding: 10px 20px;
+                padding: 10px 16px;
                 font-size: 14px;
+                min-width: auto;
+            }
+            
+            .stat-card .count {
+                font-size: 2em;
             }
         }
     </style>
 </head>
 <body>
+    <div class="model-status model-loading" id="modelStatus">
+        🔄 Loading Model...
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>🪪 ID Card Detection System</h1>
-            <p>Real-time ID card verification and monitoring</p>
+            <p>AI-Powered Real-time ID Card Verification</p>
         </div>
 
         <div class="control-panel">
@@ -238,296 +334,750 @@
             </button>
             
             <button class="btn btn-danger" id="stopBtn" onclick="stopAll()" disabled>
-                ⏹️ Stop
+                ⏹️ Stop All
             </button>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing...</p>
+        <div class="main-content">
+            <div class="video-panel" id="videoPanel">
+                <div class="placeholder" id="placeholder">
+                    <div class="placeholder-icon">📹</div>
+                    <div class="placeholder-text">Start webcam or upload media to begin detection</div>
+                </div>
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="videoCanvas"></canvas>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-card" id="totalCard">
+                    <div class="icon">👥</div>
+                    <h3>People Detected</h3>
+                    <div class="count">0</div>
+                </div>
+                <div class="stat-card" id="withIDCard">
+                    <div class="icon">✅</div>
+                    <h3>With ID Card</h3>
+                    <div class="count">0</div>
+                </div>
+                <div class="stat-card" id="withoutIDCard">
+                    <div class="icon">❌</div>
+                    <h3>Without ID Card</h3>
+                    <div class="count">0</div>
+                </div>
+            </div>
         </div>
 
-        <div class="video-container">
-            <video id="webcam" style="display: none;" autoplay playsinline></video>
-            <canvas id="videoCanvas"></canvas>
+        <div class="alert-banner alert-danger-banner" id="alertNoID">
+            ⚠️ ALERT: No ID Card Detected! Access Denied!
         </div>
-
-        <div class="alert alert-danger" id="alertNoID">
-            ⚠️ ALERT: No ID Card Detected! Please wear your ID card.
-        </div>
-        <div class="alert alert-success" id="alertID">
-            ✅ ID Card Detected - Access Granted
-        </div>
-
-        <div class="status-panel">
-            <div class="status-card" id="totalCard">
-                <h3>Total People</h3>
-                <div class="count">0</div>
-            </div>
-            <div class="status-card" id="withIDCard">
-                <h3>With ID Card</h3>
-                <div class="count">0</div>
-            </div>
-            <div class="status-card" id="withoutIDCard">
-                <h3>Without ID Card</h3>
-                <div class="count">0</div>
-            </div>
+        <div class="alert-banner alert-success-banner" id="alertID">
+            ✅ ID Card Verified - Access Granted
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <!-- ONNX Runtime Web -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort.min.js"></script>
+    
     <script>
-        // Configuration
-        const MODEL_PATH = 'best_quantized.onnx'; // Place your model in the same directory
+        // ===== CONFIGURATION =====
+        // Update this to match your model file name
+        const MODEL_PATH = './best_in8.onnx';  // ← YOUR MODEL FILE NAME
+        
+        const INPUT_SIZE = 640;
         const CONFIDENCE_THRESHOLD = 0.5;
-        const ALARM_SOUND = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf39/f4B/f3+Af39/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4='; // Add your alarm sound base64
-
+        const IOU_THRESHOLD = 0.45;
+        
+        // Update class names based on your training
+        const CLASS_NAMES = ['ID Card', 'No ID'];  // Adjust based on your classes
+        
+        // ===== GLOBAL VARIABLES =====
         let session = null;
         let isWebcamActive = false;
         let processingInterval = null;
-        let alarmAudio = null;
-        let lastAlertTime = 0;
-        const ALERT_COOLDOWN = 5000; // 5 seconds between alerts
+        let audioContext = null;
+        let alarmOscillator = null;
+        let alarmGain = null;
+        let lastAlarmTime = 0;
+        const ALARM_COOLDOWN = 3000;
 
-        // Load ONNX model
-        async function loadModel() {
+        // ===== INITIALIZATION =====
+        
+        // Initialize ONNX Runtime with correct settings
+        async function initializeONNX() {
             try {
-                document.getElementById('loading').style.display = 'block';
-                session = await ort.InferenceSession.create(MODEL_PATH);
-                console.log('Model loaded successfully');
-                document.getElementById('loading').style.display = 'none';
+                // Configure ONNX Runtime Web for optimal performance
+                ort.env.wasm.numThreads = 1;
+                ort.env.wasm.simd = true;
+                
+                // Set the WASM files path
+                ort.env.wasm.wasmPaths = {
+                    'ort-wasm.wasm': 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort-wasm.wasm',
+                    'ort-wasm-simd.wasm': 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort-wasm-simd.wasm',
+                    'ort-wasm-threaded.wasm': 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort-wasm-threaded.wasm',
+                    'ort-wasm-simd-threaded.wasm': 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort-wasm-simd-threaded.wasm'
+                };
+                
+                console.log('✅ ONNX Runtime initialized');
             } catch (error) {
-                console.error('Failed to load model:', error);
-                alert('Failed to load the ID card detection model. Please check if the model file exists.');
-                document.getElementById('loading').style.display = 'none';
+                console.error('❌ Failed to initialize ONNX Runtime:', error);
+                throw error;
             }
         }
 
-        // Preprocess image for ONNX model
-        function preprocessImage(imageData, width, height) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 640;
-            canvas.height = 640;
-            const ctx = canvas.getContext('2d');
+        // Load the quantized INT8 model
+        async function loadModel() {
+            const statusElement = document.getElementById('modelStatus');
             
-            // Draw and resize image
+            try {
+                statusElement.textContent = '🔄 Loading Model...';
+                statusElement.className = 'model-status model-loading';
+                
+                // Initialize ONNX Runtime
+                await initializeONNX();
+                
+                console.log(`📦 Loading model from: ${MODEL_PATH}`);
+                
+                // Try to fetch the model file
+                const modelResponse = await fetch(MODEL_PATH);
+                
+                if (!modelResponse.ok) {
+                    throw new Error(`Model file not found (${modelResponse.status}: ${modelResponse.statusText})`);
+                }
+                
+                const modelSize = (await modelResponse.clone().arrayBuffer()).byteLength;
+                console.log(`📊 Model size: ${(modelSize / (1024 * 1024)).toFixed(2)} MB`);
+                
+                // Load model into ONNX Runtime
+                const modelArrayBuffer = await modelResponse.arrayBuffer();
+                
+                session = await ort.InferenceSession.create(modelArrayBuffer, {
+                    executionProviders: ['wasm'],
+                    graphOptimizationLevel: 'all',
+                    enableCpuMemArena: true,
+                    enableMemPattern: true
+                });
+                
+                // Log model info
+                console.log('✅ Model loaded successfully!');
+                console.log('📋 Input names:', session.inputNames);
+                console.log('📋 Output names:', session.outputNames);
+                console.log('📋 Input shape:', session.inputNames.map(name => ({
+                    name,
+                    shape: session.input(name).dims
+                })));
+                
+                // Update status
+                statusElement.textContent = '✅ Model Ready';
+                statusElement.className = 'model-status model-loaded';
+                
+                // Auto-hide status after 5 seconds
+                setTimeout(() => {
+                    statusElement.style.opacity = '0';
+                    setTimeout(() => statusElement.remove(), 1000);
+                }, 5000);
+                
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Failed to load model:', error);
+                
+                statusElement.textContent = '❌ Model Failed to Load';
+                statusElement.className = 'model-status model-error';
+                
+                // Show detailed error
+                alert(
+                    'Failed to load the ID card detection model.\n\n' +
+                    'Please ensure:\n' +
+                    '1. The file "best_in8.onnx" exists in the root directory\n' +
+                    '2. The file path is correct\n' +
+                    '3. The model is properly quantized\n\n' +
+                    `Error: ${error.message}`
+                );
+                
+                return false;
+            }
+        }
+
+        // ===== IMAGE PREPROCESSING =====
+        
+        function preprocessImage(imageData, originalWidth, originalHeight) {
+            // Create canvas for preprocessing
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            
+            // Set to target size
+            canvas.width = INPUT_SIZE;
+            canvas.height = INPUT_SIZE;
+            
+            // Calculate scaling to maintain aspect ratio with letterboxing
+            const scale = Math.min(INPUT_SIZE / originalWidth, INPUT_SIZE / originalHeight);
+            const scaledWidth = originalWidth * scale;
+            const scaledHeight = originalHeight * scale;
+            const offsetX = (INPUT_SIZE - scaledWidth) / 2;
+            const offsetY = (INPUT_SIZE - scaledHeight) / 2;
+            
+            // Create temporary canvas for the original image
             const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = originalWidth;
+            tempCanvas.height = originalHeight;
+            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
             tempCtx.putImageData(imageData, 0, 0);
             
-            ctx.drawImage(tempCanvas, 0, 0, 640, 640);
+            // Fill with gray for letterboxing (YOLO default)
+            ctx.fillStyle = '#727272';
+            ctx.fillRect(0, 0, INPUT_SIZE, INPUT_SIZE);
             
-            const imageData_resized = ctx.getImageData(0, 0, 640, 640);
-            const input = new Float32Array(1 * 3 * 640 * 640);
+            // Draw the resized image
+            ctx.drawImage(tempCanvas, offsetX, offsetY, scaledWidth, scaledHeight);
             
-            // Normalize and rearrange to CHW format
-            for (let i = 0; i < 640 * 640; i++) {
-                input[i] = imageData_resized.data[i * 4] / 255.0; // R
-                input[640 * 640 + i] = imageData_resized.data[i * 4 + 1] / 255.0; // G
-                input[2 * 640 * 640 + i] = imageData_resized.data[i * 4 + 2] / 255.0; // B
+            // Get image data
+            const resizedImageData = ctx.getImageData(0, 0, INPUT_SIZE, INPUT_SIZE);
+            
+            // Convert to float32 array (NCHW format - channels first)
+            const input = new Float32Array(3 * INPUT_SIZE * INPUT_SIZE);
+            
+            for (let i = 0; i < INPUT_SIZE * INPUT_SIZE; i++) {
+                input[i] = resizedImageData.data[i * 4] / 255.0;                              // R channel
+                input[INPUT_SIZE * INPUT_SIZE + i] = resizedImageData.data[i * 4 + 1] / 255.0;  // G channel
+                input[2 * INPUT_SIZE * INPUT_SIZE + i] = resizedImageData.data[i * 4 + 2] / 255.0;  // B channel
             }
             
-            return new ort.Tensor('float32', input, [1, 3, 640, 640]);
+            return {
+                tensor: new ort.Tensor('float32', input, [1, 3, INPUT_SIZE, INPUT_SIZE]),
+                scale: scale,
+                offsetX: offsetX,
+                offsetY: offsetY
+            };
         }
 
-        // Run inference
-        async function detectIDCard(imageData, width, height) {
-            if (!session) {
-                console.error('Model not loaded');
-                return [];
-            }
+        // ===== POST-PROCESSING =====
+        
+        function sigmoid(x) {
+            return 1 / (1 + Math.exp(-x));
+        }
+
+        function calculateIOU(box1, box2) {
+            const x1 = Math.max(box1[0], box2[0]);
+            const y1 = Math.max(box1[1], box2[1]);
+            const x2 = Math.min(box1[2], box2[2]);
+            const y2 = Math.min(box1[3], box2[3]);
             
-            try {
-                const input = preprocessImage(imageData, width, height);
-                const outputs = await session.run({ images: input });
+            const intersection = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+            const area1 = (box1[2] - box1[0]) * (box1[3] - box1[1]);
+            const area2 = (box2[2] - box2[0]) * (box2[3] - box2[1]);
+            const union = area1 + area2 - intersection;
+            
+            return union > 0 ? intersection / union : 0;
+        }
+
+        function nonMaxSuppression(boxes, scores, iouThreshold) {
+            // Sort by score descending
+            const indices = Array.from(scores.keys()).sort((a, b) => scores[b] - scores[a]);
+            const keep = [];
+            
+            while (indices.length > 0) {
+                const current = indices.shift();
+                keep.push(current);
                 
-                // Process outputs (adjust based on your model's output format)
-                const detections = processOutputs(outputs);
-                return detections;
-            } catch (error) {
-                console.error('Detection error:', error);
-                return [];
+                for (let i = indices.length - 1; i >= 0; i--) {
+                    const idx = indices[i];
+                    const iou = calculateIOU(boxes[current], boxes[idx]);
+                    if (iou > iouThreshold) {
+                        indices.splice(i, 1);
+                    }
+                }
             }
+            
+            return keep;
         }
 
-        // Process model outputs (adjust based on your model)
-        function processOutputs(outputs) {
+        function processOutputs(outputs, originalWidth, originalHeight, scale, offsetX, offsetY) {
             const detections = [];
-            // This function needs to be adjusted based on your model's output format
-            // Below is a generic implementation
             
-            const output = outputs[Object.keys(outputs)[0]];
+            // Get the output tensor
+            const outputName = session.outputNames[0];
+            const output = outputs[outputName];
+            
+            if (!output) {
+                console.error('No output found in model');
+                return detections;
+            }
+            
             const data = output.data;
             const dims = output.dims;
             
-            // Assuming output format: [batch, num_detections, 6] where 6 = [x1, y1, x2, y2, confidence, class]
-            for (let i = 0; i < dims[1]; i++) {
-                const confidence = data[i * dims[2] + 4];
-                if (confidence > CONFIDENCE_THRESHOLD) {
-                    detections.push({
-                        x: data[i * dims[2]],
-                        y: data[i * dims[2] + 1],
-                        width: data[i * dims[2] + 2] - data[i * dims[2]],
-                        height: data[i * dims[2] + 3] - data[i * dims[2] + 1],
-                        confidence: confidence,
-                        class: data[i * dims[2] + 5]
-                    });
+            console.log('Output dimensions:', dims);
+            
+            let numPredictions, numClasses;
+            
+            // Handle different YOLO output formats
+            if (dims.length === 3) {
+                // Format: [batch, num_predictions, channels]
+                numPredictions = dims[1];
+                numClasses = dims[2] - 5;
+            } else if (dims.length === 2) {
+                // Format: [num_predictions, channels]
+                numPredictions = dims[0];
+                numClasses = dims[1] - 5;
+            } else if (dims.length === 4 && dims[1] === 84) {
+                // YOLOv8 format: [batch, 84, num_predictions]
+                return processYOLOv8Output(data, dims, originalWidth, originalHeight);
+            } else {
+                console.error('Unexpected output dimensions:', dims);
+                return detections;
+            }
+            
+            const boxes = [];
+            const scores = [];
+            const classes = [];
+            
+            // Process each prediction
+            for (let i = 0; i < numPredictions; i++) {
+                const offset = i * (5 + numClasses);
+                
+                // Get objectness score
+                const objectness = sigmoid(data[offset + 4]);
+                
+                if (objectness < 0.3) continue; // Quick filter
+                
+                // Get class probabilities
+                let maxClassProb = 0;
+                let maxClassIdx = 0;
+                
+                for (let c = 0; c < numClasses; c++) {
+                    const classProb = sigmoid(data[offset + 5 + c]);
+                    if (classProb > maxClassProb) {
+                        maxClassProb = classProb;
+                        maxClassIdx = c;
+                    }
                 }
+                
+                const finalScore = objectness * maxClassProb;
+                
+                if (finalScore > CONFIDENCE_THRESHOLD) {
+                    // Decode box coordinates
+                    const x_center = sigmoid(data[offset]) * INPUT_SIZE;
+                    const y_center = sigmoid(data[offset + 1]) * INPUT_SIZE;
+                    const width = Math.exp(data[offset + 2]) * INPUT_SIZE;
+                    const height = Math.exp(data[offset + 3]) * INPUT_SIZE;
+                    
+                    // Convert to corners and adjust for letterboxing
+                    const x1 = (x_center - width / 2 - offsetX) / scale;
+                    const y1 = (y_center - height / 2 - offsetY) / scale;
+                    const x2 = (x_center + width / 2 - offsetX) / scale;
+                    const y2 = (y_center + height / 2 - offsetY) / scale;
+                    
+                    boxes.push([x1, y1, x2, y2]);
+                    scores.push(finalScore);
+                    classes.push(maxClassIdx);
+                }
+            }
+            
+            // Apply Non-Maximum Suppression
+            if (boxes.length > 0) {
+                const keepIndices = nonMaxSuppression(boxes, scores, IOU_THRESHOLD);
+                
+                keepIndices.forEach(idx => {
+                    detections.push({
+                        box: boxes[idx],
+                        score: scores[idx],
+                        class: classes[idx],
+                        label: CLASS_NAMES[classes[idx]] || `class_${classes[idx]}`
+                    });
+                });
             }
             
             return detections;
         }
 
-        // Draw detections on canvas
-        function drawDetections(ctx, detections, canvasWidth, canvasHeight) {
-            let hasIDCard = false;
+        // Alternative YOLOv8 output processing
+        function processYOLOv8Output(data, dims, originalWidth, originalHeight) {
+            const detections = [];
+            const numClasses = dims[1] - 4; // 80 for COCO
+            const numPredictions = dims[2];
             
-            detections.forEach(det => {
-                const x = det.x * canvasWidth;
-                const y = det.y * canvasHeight;
-                const w = det.width * canvasWidth;
-                const h = det.height * canvasHeight;
-                
-                // Draw bounding box
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, w, h);
-                
-                // Draw label
-                ctx.fillStyle = '#00ff00';
-                ctx.font = '16px Arial';
-                ctx.fillText(`ID Card ${(det.confidence * 100).toFixed(1)}%`, x, y - 5);
-                
-                hasIDCard = true;
-            });
+            // Transpose if needed: [batch, predictions, channels]
+            const boxes = [];
+            const scores = [];
+            const classes = [];
             
-            updateStatus(detections.length, hasIDCard);
+            for (let i = 0; i < numPredictions; i++) {
+                let maxScore = 0;
+                let maxClass = 0;
+                
+                // Find max class probability
+                for (let c = 0; c < numClasses; c++) {
+                    const score = data[c * numPredictions + i];
+                    if (score > maxScore) {
+                        maxScore = score;
+                        maxClass = c;
+                    }
+                }
+                
+                if (maxScore > CONFIDENCE_THRESHOLD) {
+                    // Get box coordinates
+                    const x_center = data[numClasses * numPredictions + i];
+                    const y_center = data[(numClasses + 1) * numPredictions + i];
+                    const width = data[(numClasses + 2) * numPredictions + i];
+                    const height = data[(numClasses + 3) * numPredictions + i];
+                    
+                    // Convert to corners
+                    const x1 = Math.max(0, (x_center - width / 2) * originalWidth);
+                    const y1 = Math.max(0, (y_center - height / 2) * originalHeight);
+                    const x2 = Math.min(originalWidth, (x_center + width / 2) * originalWidth);
+                    const y2 = Math.min(originalHeight, (y_center + height / 2) * originalHeight);
+                    
+                    boxes.push([x1, y1, x2, y2]);
+                    scores.push(maxScore);
+                    classes.push(maxClass);
+                }
+            }
+            
+            // Apply NMS
+            if (boxes.length > 0) {
+                const keepIndices = nonMaxSuppression(boxes, scores, IOU_THRESHOLD);
+                
+                keepIndices.forEach(idx => {
+                    detections.push({
+                        box: boxes[idx],
+                        score: scores[idx],
+                        class: classes[idx],
+                        label: CLASS_NAMES[classes[idx]] || `class_${classes[idx]}`
+                    });
+                });
+            }
+            
+            return detections;
         }
 
-        // Update status display
-        function updateStatus(detectionCount, hasIDCard) {
-            document.getElementById('totalCard').querySelector('.count').textContent = '1';
-            document.getElementById('withIDCard').querySelector('.count').textContent = hasIDCard ? '1' : '0';
-            document.getElementById('withoutIDCard').querySelector('.count').textContent = hasIDCard ? '0' : '1';
+        // ===== INFERENCE =====
+        
+        async function detectIDCard(imageData, originalWidth, originalHeight) {
+            if (!session) {
+                console.error('❌ Model not loaded');
+                return [];
+            }
             
+            try {
+                // Preprocess image
+                const { tensor, scale, offsetX, offsetY } = preprocessImage(
+                    imageData, 
+                    originalWidth, 
+                    originalHeight
+                );
+                
+                // Create input feeds using the correct input name
+                const feeds = {};
+                feeds[session.inputNames[0]] = tensor;
+                
+                // Run inference
+                const startTime = performance.now();
+                const outputs = await session.run(feeds);
+                const inferenceTime = (performance.now() - startTime).toFixed(2);
+                
+                // Process outputs
+                const detections = processOutputs(
+                    outputs, 
+                    originalWidth, 
+                    originalHeight, 
+                    scale, 
+                    offsetX, 
+                    offsetY
+                );
+                
+                console.log(`🕒 Inference time: ${inferenceTime}ms, Detections: ${detections.length}`);
+                
+                return detections;
+                
+            } catch (error) {
+                console.error('❌ Detection error:', error);
+                return [];
+            }
+        }
+
+        // ===== VISUALIZATION =====
+        
+        function drawDetections(ctx, detections, canvasWidth, canvasHeight) {
+            let hasIDCard = false;
+            let personCount = detections.length;
+            
+            detections.forEach(det => {
+                const [x1, y1, x2, y2] = det.box;
+                
+                // Ensure coordinates are within canvas bounds
+                const drawX = Math.max(0, x1);
+                const drawY = Math.max(0, y1);
+                const drawW = Math.min(canvasWidth, x2) - drawX;
+                const drawH = Math.min(canvasHeight, y2) - drawY;
+                
+                // Skip invalid boxes
+                if (drawW <= 0 || drawH <= 0) return;
+                
+                // Determine if this is an ID card (class 0)
+                const isIDCard = det.class === 0;
+                
+                // Set colors based on detection type
+                const color = isIDCard ? '#00ff00' : '#ff0000';
+                const bgColor = isIDCard ? 'rgba(0, 255, 0, 0.8)' : 'rgba(255, 0, 0, 0.8)';
+                
+                // Draw bounding box
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.strokeRect(drawX, drawY, drawW, drawH);
+                
+                // Draw label
+                const label = `${det.label} ${(det.score * 100).toFixed(1)}%`;
+                ctx.font = 'bold 16px Arial';
+                const textMetrics = ctx.measureText(label);
+                const textWidth = textMetrics.width;
+                const textHeight = 20;
+                
+                // Label background
+                ctx.fillStyle = bgColor;
+                const labelY = drawY > 25 ? drawY - 25 : drawY;
+                ctx.fillRect(drawX, labelY, textWidth + 10, textHeight + 5);
+                
+                // Label text
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(label, drawX + 5, labelY + textHeight);
+                
+                if (isIDCard) {
+                    hasIDCard = true;
+                }
+            });
+            
+            updateStatus(personCount, hasIDCard);
+        }
+
+        // ===== UI UPDATES =====
+        
+        function updateStatus(personCount, hasIDCard) {
+            // Update counters
+            document.getElementById('totalCard').querySelector('.count').textContent = personCount;
+            document.getElementById('withIDCard').querySelector('.count').textContent = hasIDCard ? '1' : '0';
+            document.getElementById('withoutIDCard').querySelector('.count').textContent = hasIDCard ? '0' : (personCount > 0 ? '1' : '0');
+            
+            // Update card styles
+            const totalCard = document.getElementById('totalCard');
+            const withIDCard = document.getElementById('withIDCard');
+            const withoutIDCard = document.getElementById('withoutIDCard');
+            
+            totalCard.className = 'stat-card' + (personCount > 0 ? ' active-green' : '');
+            withIDCard.className = hasIDCard ? 'stat-card active-green' : 'stat-card';
+            withoutIDCard.className = (!hasIDCard && personCount > 0) ? 'stat-card active-red' : 'stat-card';
+            
+            // Handle alerts
             const alertNoID = document.getElementById('alertNoID');
             const alertID = document.getElementById('alertID');
             
-            if (!hasIDCard) {
+            if (personCount > 0 && !hasIDCard) {
                 alertID.style.display = 'none';
                 alertNoID.style.display = 'block';
                 playAlarm();
-            } else {
+            } else if (hasIDCard) {
                 alertNoID.style.display = 'none';
                 alertID.style.display = 'block';
+                stopAlarm();
+                // Auto-hide success alert
+                setTimeout(() => {
+                    alertID.style.display = 'none';
+                }, 3000);
+            } else {
+                alertNoID.style.display = 'none';
+                alertID.style.display = 'none';
                 stopAlarm();
             }
         }
 
-        // Play alarm sound
+        // ===== ALARM SYSTEM =====
+        
         function playAlarm() {
             const now = Date.now();
-            if (now - lastAlertTime < ALERT_COOLDOWN) return;
+            if (now - lastAlarmTime < ALARM_COOLDOWN) return;
             
-            lastAlertTime = now;
+            lastAlarmTime = now;
             
-            if (!alarmAudio) {
-                alarmAudio = new Audio(ALARM_SOUND);
-                alarmAudio.loop = true;
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Stop any existing alarm
+                stopAlarm();
+                
+                // Create alarm sound using Web Audio API
+                alarmOscillator = audioContext.createOscillator();
+                alarmGain = audioContext.createGain();
+                
+                alarmOscillator.connect(alarmGain);
+                alarmGain.connect(audioContext.destination);
+                
+                // Configure alarm sound
+                alarmOscillator.type = 'square';
+                alarmGain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                
+                // Create alternating alarm pattern
+                const now2 = audioContext.currentTime;
+                alarmOscillator.frequency.setValueAtTime(880, now2);
+                alarmOscillator.frequency.setValueAtTime(440, now2 + 0.15);
+                alarmOscillator.frequency.setValueAtTime(880, now2 + 0.3);
+                alarmOscillator.frequency.setValueAtTime(440, now2 + 0.45);
+                alarmOscillator.frequency.setValueAtTime(880, now2 + 0.6);
+                alarmOscillator.frequency.setValueAtTime(440, now2 + 0.75);
+                
+                alarmOscillator.start(now2);
+                
+                // Auto-stop after 2 seconds
+                setTimeout(() => {
+                    stopAlarm();
+                }, 2000);
+                
+                console.log('🔊 Alarm activated');
+                
+            } catch (error) {
+                console.error('Failed to play alarm:', error);
             }
-            
-            alarmAudio.play().catch(e => console.log('Alarm play failed:', e));
         }
 
-        // Stop alarm sound
         function stopAlarm() {
-            if (alarmAudio) {
-                alarmAudio.pause();
-                alarmAudio.currentTime = 0;
+            if (alarmOscillator) {
+                try {
+                    alarmOscillator.stop();
+                    alarmOscillator.disconnect();
+                } catch (e) {
+                    // Ignore if already stopped
+                }
+                alarmOscillator = null;
+            }
+            if (alarmGain) {
+                alarmGain.disconnect();
+                alarmGain = null;
             }
         }
 
-        // Process frame from video/webcam
+        // ===== FRAME PROCESSING =====
+        
         async function processFrame(source, canvas, ctx) {
-            if (!source || source.paused || source.ended) return;
+            if (!source || (source.tagName === 'VIDEO' && (source.paused || source.ended))) return;
             
             const width = source.videoWidth || source.width;
             const height = source.videoHeight || source.height;
             
-            canvas.width = width;
-            canvas.height = height;
+            if (width === 0 || height === 0) return;
             
+            // Update canvas size if needed
+            if (canvas.width !== width || canvas.height !== height) {
+                canvas.width = width;
+                canvas.height = height;
+            }
+            
+            // Hide placeholder
+            const placeholder = document.getElementById('placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+            
+            // Draw current frame
             ctx.drawImage(source, 0, 0, width, height);
+            
+            // Get image data
             const imageData = ctx.getImageData(0, 0, width, height);
             
+            // Run detection
             const detections = await detectIDCard(imageData, width, height);
+            
+            // Draw results
             drawDetections(ctx, detections, width, height);
         }
 
-        // Handle image upload
+        // ===== MEDIA HANDLERS =====
+        
         async function handleImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             
+            console.log('📷 Processing image:', file.name);
             stopAll();
             
             const img = new Image();
             img.onload = async function() {
                 const canvas = document.getElementById('videoCanvas');
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 
+                // Hide placeholder
+                document.getElementById('placeholder').style.display = 'none';
+                
+                // Set canvas size
                 canvas.width = img.width;
                 canvas.height = img.height;
+                
+                // Draw image
                 ctx.drawImage(img, 0, 0);
                 
+                // Run detection
                 const imageData = ctx.getImageData(0, 0, img.width, img.height);
                 const detections = await detectIDCard(imageData, img.width, img.height);
                 drawDetections(ctx, detections, img.width, img.height);
             };
+            
+            img.onerror = function() {
+                alert('Failed to load image. Please try another file.');
+            };
+            
             img.src = URL.createObjectURL(file);
         }
 
-        // Handle video upload
         async function handleVideoUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             
+            console.log('🎥 Processing video:', file.name);
             stopAll();
             
-            const video = document.createElement('video');
+            const video = document.getElementById('webcam');
             video.src = URL.createObjectURL(file);
             video.loop = true;
+            video.muted = true;
+            video.style.display = 'block';
             
             const canvas = document.getElementById('videoCanvas');
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
             
             video.onloadedmetadata = () => {
                 video.play();
                 document.getElementById('stopBtn').disabled = false;
+                document.getElementById('webcamBtn').disabled = true;
                 
+                // Process frames continuously
                 processingInterval = setInterval(() => {
                     processFrame(video, canvas, ctx);
-                }, 100); // Process every 100ms
+                }, 100); // 10 FPS for performance
+            };
+            
+            video.onerror = function() {
+                alert('Failed to load video. Please try another file.');
+                stopAll();
             };
         }
 
-        // Toggle webcam
         async function toggleWebcam() {
             const webcam = document.getElementById('webcam');
             const webcamBtn = document.getElementById('webcamBtn');
             
             if (isWebcamActive) {
+                // Stop webcam
                 stopWebcam();
                 webcamBtn.textContent = '📹 Start Webcam';
                 webcamBtn.className = 'btn btn-success';
+                document.getElementById('stopBtn').disabled = true;
             } else {
                 try {
+                    stopAll();
+                    
+                    // Request webcam access
                     const stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
                             width: { ideal: 1280 },
-                            height: { ideal: 720 }
+                            height: { ideal: 720 },
+                            facingMode: 'environment'
                         } 
                     });
                     
@@ -541,40 +1091,54 @@
                     document.getElementById('stopBtn').disabled = false;
                     
                     const canvas = document.getElementById('videoCanvas');
-                    const ctx = canvas.getContext('2d');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
                     
+                    console.log('📹 Webcam started');
+                    
+                    // Process frames
                     processingInterval = setInterval(() => {
                         processFrame(webcam, canvas, ctx);
                     }, 100);
+                    
                 } catch (error) {
                     console.error('Webcam error:', error);
-                    alert('Failed to access webcam. Please check permissions.');
+                    alert('Failed to access webcam. Please check permissions and ensure your device has a camera.');
                 }
             }
         }
 
-        // Stop webcam
         function stopWebcam() {
             const webcam = document.getElementById('webcam');
             if (webcam.srcObject) {
-                webcam.srcObject.getTracks().forEach(track => track.stop());
+                webcam.srcObject.getTracks().forEach(track => {
+                    track.stop();
+                    console.log(`Stopped track: ${track.kind}`);
+                });
                 webcam.srcObject = null;
             }
             webcam.style.display = 'none';
+            webcam.src = '';
             isWebcamActive = false;
         }
 
-        // Stop all processing
         function stopAll() {
+            console.log('⏹️ Stopping all...');
+            
+            // Stop webcam
             stopWebcam();
+            
+            // Stop alarm
             stopAlarm();
             
+            // Stop processing
             if (processingInterval) {
                 clearInterval(processingInterval);
                 processingInterval = null;
             }
             
+            // Reset UI
             document.getElementById('stopBtn').disabled = true;
+            document.getElementById('webcamBtn').disabled = false;
             document.getElementById('webcamBtn').textContent = '📹 Start Webcam';
             document.getElementById('webcamBtn').className = 'btn btn-success';
             
@@ -582,19 +1146,62 @@
             document.getElementById('alertNoID').style.display = 'none';
             document.getElementById('alertID').style.display = 'none';
             
-            // Reset counts
+            // Reset stats
             document.getElementById('totalCard').querySelector('.count').textContent = '0';
             document.getElementById('withIDCard').querySelector('.count').textContent = '0';
             document.getElementById('withoutIDCard').querySelector('.count').textContent = '0';
+            
+            // Reset card styles
+            document.getElementById('totalCard').className = 'stat-card';
+            document.getElementById('withIDCard').className = 'stat-card';
+            document.getElementById('withoutIDCard').className = 'stat-card';
+            
+            // Show placeholder
+            document.getElementById('placeholder').style.display = 'block';
+            
+            // Clear canvas
+            const canvas = document.getElementById('videoCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
 
-        // Initialize
+        // ===== INITIALIZATION =====
+        
         async function init() {
-            await loadModel();
+            console.log('🚀 Initializing ID Card Detection System...');
+            console.log('📦 Model file:', MODEL_PATH);
+            
+            const success = await loadModel();
+            
+            if (success) {
+                console.log('✅ System ready!');
+                console.log('📋 Instructions:');
+                console.log('  - Click "Start Webcam" for live detection');
+                console.log('  - Upload images or videos for file-based detection');
+                console.log('  - Alarm will sound if no ID card is detected');
+            } else {
+                console.error('❌ System initialization failed');
+            }
         }
 
-        // Start when page loads
+        // ===== EVENT LISTENERS =====
+        
         window.addEventListener('load', init);
+        
+        window.addEventListener('beforeunload', () => {
+            stopAll();
+        });
+
+        // Handle visibility change to optimize performance
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAll();
+            }
+        });
+
+        console.log('📄 ID Card Detection System script loaded');
     </script>
 </body>
 </html>
