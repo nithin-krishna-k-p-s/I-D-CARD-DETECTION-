@@ -380,8 +380,8 @@
     
     <script>
         // ===== CONFIGURATION =====
-        // Update this to match your model file name
-        const MODEL_PATH = './best_in8.onnx';  // ← YOUR MODEL FILE NAME
+        // ← YOUR MODEL FILE NAME - Updated to best_int8.onnx
+        const MODEL_PATH = './best_int8.onnx';
         
         const INPUT_SIZE = 640;
         const CONFIDENCE_THRESHOLD = 0.5;
@@ -441,7 +441,7 @@
                 const modelResponse = await fetch(MODEL_PATH);
                 
                 if (!modelResponse.ok) {
-                    throw new Error(`Model file not found (${modelResponse.status}: ${modelResponse.statusText})`);
+                    throw new Error(`Model file not found (${modelResponse.status}: ${modelResponse.statusText}). Please ensure best_int8.onnx is in the root directory.`);
                 }
                 
                 const modelSize = (await modelResponse.clone().arrayBuffer()).byteLength;
@@ -461,9 +461,10 @@
                 console.log('✅ Model loaded successfully!');
                 console.log('📋 Input names:', session.inputNames);
                 console.log('📋 Output names:', session.outputNames);
-                console.log('📋 Input shape:', session.inputNames.map(name => ({
+                console.log('📋 Input details:', session.inputNames.map(name => ({
                     name,
-                    shape: session.input(name).dims
+                    shape: session.input(name).dims,
+                    type: session.input(name).type
                 })));
                 
                 // Update status
@@ -488,7 +489,7 @@
                 alert(
                     'Failed to load the ID card detection model.\n\n' +
                     'Please ensure:\n' +
-                    '1. The file "best_in8.onnx" exists in the root directory\n' +
+                    '1. The file "best_int8.onnx" exists in the root directory\n' +
                     '2. The file path is correct\n' +
                     '3. The model is properly quantized\n\n' +
                     `Error: ${error.message}`
