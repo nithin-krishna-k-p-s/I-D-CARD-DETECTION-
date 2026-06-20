@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #videoCanvas, #webcam {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+
+        .status-card.detected {
+            border-color: #48bb78;
+        }
+
+        .status-card.not-detected {
+            border-color: #f56565;
+        }
+
+        .status-card h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .status-card .count {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .alert-danger {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🪪 ID Card Detection System</h1>
+            <p>Real-time ID card verification and monitoring</p>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn btn-primary" onclick="document.getElementById('imageInput').click()">
+                📷 Upload Image
+            </button>
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+            
+            <button class="btn btn-primary" onclick="document.getElementById('videoInput').click()">
+                🎥 Upload Video
+            </button>
+            <input type="file" id="videoInput" accept="video/*" onchange="handleVideoUpload(event)">
+            
+            <button class="btn btn-success" id="webcamBtn" onclick="toggleWebcam()">
+                📹 Start Webcam
+            </button>
+            
+            <button class="btn btn-danger" id="stopBtn" onclick="stopAll()" disabled>
+                ⏹️ Stop
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <div class="video-container">
+            <video id="webcam" style="display: none;" autoplay playsinline></video>
+            <canvas id="videoCanvas"></canvas>
+        </div>
+
+        <div class="alert alert-danger" id="alertNoID">
+            ⚠️ ALERT: No ID Card Detected! Please wear your ID card.
+        </div>
+        <div class="alert alert-success" id="alertID">
+            ✅ ID Card Detected - Access Granted
+        </div>
+
+        <div class="status-panel">
+            <div class="status-card" id="totalCard">
+                <h3>Total People</h3>
+                <div class="count">0</div>
+            </div>
+            <div class="status-card" id="withIDCard">
+                <h3>With ID Card</h3>
+                <div class="count">0</div>
+            </div>
+            <div class="status-card" id="withoutIDCard">
+                <h3>Without ID Card</h3>
+                <div class="count">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <script>
+        // Configuration
+        const MODEL_PATH = 'best_quantized.onnx'; // Place your model in the same directory
+        const CONFIDENCE_THRESHOLD = 0.5;
+        const ALARM_SOUND = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf39/f4B/f3+Af39/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4='; // Add your alarm sound base64
+
+        let session = null;
+        let isWebcamActive = false;
+        let processingInterval = null;
+        let alarmAudio = null;
+        let lastAlertTime = 0;
+        const ALERT_COOLDOWN = 5000; // 5 seconds between alerts
+
+        // Load ONNX model
+        async function loadModel() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                session = await ort.InferenceSession.create(MODEL_PATH);
+                console.log('Model loaded successfully');
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error('Failed to load model:', error);
+                alert('Failed to load the ID card detection model. Please check if the model file exists.');
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Preprocess image for ONNX model
+        function preprocessImage(imageData, width, height) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 640;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw and resize image
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.putImageData(imageData, 0, 0);
+            
+            ctx.drawImage(tempCanvas, 0, 0, 640, 640);
+            
+            const imageData_resized = ctx.getImageData(0, 0, 640, 640);
+            const input = new Float32Array(1 * 3 * 640 * 640);
+            
+            // Normalize and rearrange to CHW format
+            for (let i = 0; i < 640 * 640; i++) {
+                input[i] = imageData_resized.data[i * 4] / 255.0; // R
+                input[640 * 640 + i] = imageData_resized.data[i * 4 + 1] / 255.0; // G
+                input[2 * 640 * 640 + i] = imageData_resized.data[i * 4 + 2] / 255.0; // B
+            }
+            
+            return new ort.Tensor('float32', input, [1, 3, 640, 640]);
+        }
+
+        // Run inference
+        async function detectIDCard(imageData, width, height) {
+            if (!session) {
+                console.error('Model not loaded');
+                return [];
+            }
+            
+            try {
+                const input = preprocessImage(imageData, width, height);
+                const outputs = await session.run({ images: input });
+                
+                // Process outputs (adjust based on your model's output format)
+                const detections = processOutputs(outputs);
+                return detections;
+            } catch (error) {
+                console.error('Detection error:', error);
+                return [];
+            }
+        }
+
+        // Process model outputs (adjust based on your model)
+        function processOutputs(outputs) {
+            const detections = [];
+            // This function needs to be adjusted based on your model's output format
+            // Below is a generic implementation
+            
+            const output = outputs[Object.keys(outputs)[0]];
+            const data = output.data;
+            const dims = output.dims;
+            
+            // Assuming output format: [batch, num_detections, 6] where 6 = [x1, y1, x2, y2, confidence, class]
+            for (let i = 0; i < dims[1]; i++) {
+                const confidence = data[i * dims[2] + 4];
+                if (confidence > CONFIDENCE_THRESHOLD) {
+                    detections.push({
+                        x: data[i * dims[2]],
+                        y: data[i * dims[2] + 1],
+                        width: data[i * dims[2] + 2] - data[i * dims[2]],
+                        height: data[i * dims[2] + 3] - data[i * dims[2] + 1],
+                        confidence: confidence,
+                        class: data[i * dims[2] + 5]
+                    });
+                }
+            }
+            
+            return detections;
+        }
+
+        // Draw detections on canvas
+        function drawDetections(ctx, detections, canvasWidth, canvasHeight) {
+            let hasIDCard = false;
+            
+            detections.forEach(det => {
+                const x = det.x * canvasWidth;
+                const y = det.y * canvasHeight;
+                const w = det.width * canvasWidth;
+                const h = det.height * canvasHeight;
+                
+                // Draw bounding box
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, w, h);
+                
+                // Draw label
+                ctx.fillStyle = '#00ff00';
+                ctx.font = '16px Arial';
+                ctx.fillText(`ID Card ${(det.confidence * 100).toFixed(1)}%`, x, y - 5);
+                
+                hasIDCard = true;
+            });
+            
+            updateStatus(detections.length, hasIDCard);
+        }
+
+        // Update status display
+        function updateStatus(detectionCount, hasIDCard) {
+            document.getElementById('totalCard').querySelector('.count').textContent = '1';
+            document.getElementById('withIDCard').querySelector('.count').textContent = hasIDCard ? '1' : '0';
+            document.getElementById('withoutIDCard').querySelector('.count').textContent = hasIDCard ? '0' : '1';
+            
+            const alertNoID = document.getElementById('alertNoID');
+            const alertID = document.getElementById('alertID');
+            
+            if (!hasIDCard) {
+                alertID.style.display = 'none';
+                alertNoID.style.display = 'block';
+                playAlarm();
+            } else {
+                alertNoID.style.display = 'none';
+                alertID.style.display = 'block';
+                stopAlarm();
+            }
+        }
+
+        // Play alarm sound
+        function playAlarm() {
+            const now = Date.now();
+            if (now - lastAlertTime < ALERT_COOLDOWN) return;
+            
+            lastAlertTime = now;
+            
+            if (!alarmAudio) {
+                alarmAudio = new Audio(ALARM_SOUND);
+                alarmAudio.loop = true;
+            }
+            
+            alarmAudio.play().catch(e => console.log('Alarm play failed:', e));
+        }
+
+        // Stop alarm sound
+        function stopAlarm() {
+            if (alarmAudio) {
+                alarmAudio.pause();
+                alarmAudio.currentTime = 0;
+            }
+        }
+
+        // Process frame from video/webcam
+        async function processFrame(source, canvas, ctx) {
+            if (!source || source.paused || source.ended) return;
+            
+            const width = source.videoWidth || source.width;
+            const height = source.videoHeight || source.height;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx.drawImage(source, 0, 0, width, height);
+            const imageData = ctx.getImageData(0, 0, width, height);
+            
+            const detections = await detectIDCard(imageData, width, height);
+            drawDetections(ctx, detections, width, height);
+        }
+
+        // Handle image upload
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            stopAll();
+            
+            const img = new Image();
+            img.onload = async function() {
+                const canvas = document.getElementById('videoCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, img.width, img.height);
+                const detections = await detectIDCard(imageData, img.width, img.height);
+                drawDetections(ctx, detections, img.width, img.height);
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        // Handle video upload
+        async function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            stopAll();
+            
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.loop = true;
+            
+            const canvas = document.getElementById('videoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            video.onloadedmetadata = () => {
+                video.play();
+                document.getElementById('stopBtn').disabled = false;
+                
+                processingInterval = setInterval(() => {
+                    processFrame(video, canvas, ctx);
+                }, 100); // Process every 100ms
+            };
+        }
+
+        // Toggle webcam
+        async function toggleWebcam() {
+            const webcam = document.getElementById('webcam');
+            const webcamBtn = document.getElementById('webcamBtn');
+            
+            if (isWebcamActive) {
+                stopWebcam();
+                webcamBtn.textContent = '📹 Start Webcam';
+                webcamBtn.className = 'btn btn-success';
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        } 
+                    });
+                    
+                    webcam.srcObject = stream;
+                    webcam.style.display = 'block';
+                    await webcam.play();
+                    
+                    isWebcamActive = true;
+                    webcamBtn.textContent = '📹 Stop Webcam';
+                    webcamBtn.className = 'btn btn-danger';
+                    document.getElementById('stopBtn').disabled = false;
+                    
+                    const canvas = document.getElementById('videoCanvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    processingInterval = setInterval(() => {
+                        processFrame(webcam, canvas, ctx);
+                    }, 100);
+                } catch (error) {
+                    console.error('Webcam error:', error);
+                    alert('Failed to access webcam. Please check permissions.');
+                }
+            }
+        }
+
+        // Stop webcam
+        function stopWebcam() {
+            const webcam = document.getElementById('webcam');
+            if (webcam.srcObject) {
+                webcam.srcObject.getTracks().forEach(track => track.stop());
+                webcam.srcObject = null;
+            }
+            webcam.style.display = 'none';
+            isWebcamActive = false;
+        }
+
+        // Stop all processing
+        function stopAll() {
+            stopWebcam();
+            stopAlarm();
+            
+            if (processingInterval) {
+                clearInterval(processingInterval);
+                processingInterval = null;
+            }
+            
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('webcamBtn').textContent = '📹 Start Webcam';
+            document.getElementById('webcamBtn').className = 'btn btn-success';
+            
+            // Hide alerts
+            document.getElementById('alertNoID').style.display = 'none';
+            document.getElementById('alertID').style.display = 'none';
+            
+            // Reset counts
+            document.getElementById('totalCard').querySelector('.count').textContent = '0';
+            document.getElementById('withIDCard').querySelector('.count').textContent = '0';
+            document.getElementById('withoutIDCard').querySelector('.count').textContent = '0';
+        }
+
+        // Initialize
+        async function init() {
+            await loadModel();
+        }
+
+        // Start when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
